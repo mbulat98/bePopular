@@ -1,0 +1,6 @@
+framework module Pods_bePopular {
+  umbrella header "Pods-bePopular-umbrella.h"
+
+  export *
+  module * { export * }
+}
