@@ -188,6 +188,7 @@ extension LoginViewController: GIDSignInUIDelegate, GIDSignInDelegate {
             DatabaseManager.shared.createUser(uid: uid, userData: userInfo) { () in
                 self.openBoardViewController()
                 activityIndicator.stopAnimating()
+                signIn.disconnect()
             }
         }
     }

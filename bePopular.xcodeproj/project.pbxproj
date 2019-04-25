@@ -8,6 +8,7 @@
 
 /* Begin PBXBuildFile section */
 		57BCA67714BA69DEA747D04A /* Pods_bePopular.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = C92E40F910673D7915D24ED0 /* Pods_bePopular.framework */; };
+		953244352271AAC0007EF059 /* ImageCache.swift in Sources */ = {isa = PBXBuildFile; fileRef = 953244342271AAC0007EF059 /* ImageCache.swift */; };
 		954F41152267285B00328928 /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 954F41142267285B00328928 /* AppDelegate.swift */; };
 		954F41172267285B00328928 /* BoardViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 954F41162267285B00328928 /* BoardViewController.swift */; };
 		954F411A2267285B00328928 /* BoardViewController.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 954F41182267285B00328928 /* BoardViewController.storyboard */; };
@@ -39,6 +40,7 @@
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
+		953244342271AAC0007EF059 /* ImageCache.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ImageCache.swift; sourceTree = "<group>"; };
 		954F41112267285B00328928 /* bePopular.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = bePopular.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		954F41142267285B00328928 /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
 		954F41162267285B00328928 /* BoardViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BoardViewController.swift; sourceTree = "<group>"; };
@@ -121,6 +123,7 @@
 				954F4155226DC29500328928 /* SaveScore.swift */,
 				954F41472268BF7700328928 /* UserInfo.swift */,
 				954F4157226DCAB900328928 /* UserDefaultKeys.swift */,
+				953244342271AAC0007EF059 /* ImageCache.swift */,
 				954F41502269A4BF00328928 /* UserStories */,
 				954F413D22687F2000328928 /* Common */,
 				954F41332268693900328928 /* Extensions */,
@@ -411,6 +414,7 @@
 				954F41172267285B00328928 /* BoardViewController.swift in Sources */,
 				954F414E2269A4A600328928 /* SignUpViewController.swift in Sources */,
 				954F4154226A0BF400328928 /* UIColor+hex.swift in Sources */,
+				953244352271AAC0007EF059 /* ImageCache.swift in Sources */,
 				954F4132226868AD00328928 /* UITextField+Padding.swift in Sources */,
 				954F4127226751C400328928 /* BoardTableViewCell.swift in Sources */,
 				954F4152226A07A800328928 /* UIViewController+StoryboardInstance.swift in Sources */,

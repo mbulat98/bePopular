@@ -175,7 +175,10 @@
                                     <outlet property="delegate" destination="BYZ-38-t0r" id="ccm-rD-rjL"/>
                                 </connections>
                             </tableView>
-                            <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="VAP-tb-BsF">
+                            <activityIndicatorView opaque="NO" contentMode="scaleToFill" horizontalHuggingPriority="750" verticalHuggingPriority="750" style="whiteLarge" translatesAutoresizingMaskIntoConstraints="NO" id="nFO-c6-rRg">
+                                <rect key="frame" x="169" y="390.5" width="37" height="37"/>
+                            </activityIndicatorView>
+                            <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" showsTouchWhenHighlighted="YES" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="VAP-tb-BsF">
                                 <rect key="frame" x="325" y="47" width="30" height="30"/>
                                 <color key="backgroundColor" white="0.0" alpha="0.0" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
                                 <constraints>
@@ -184,11 +187,15 @@
                                 </constraints>
                                 <color key="tintColor" red="0.98823529409999999" green="0.78039215689999997" blue="0.20784313730000001" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
                                 <state key="normal" image="ic_logout"/>
+                                <connections>
+                                    <action selector="onLogoutButton:" destination="BYZ-38-t0r" eventType="touchUpInside" id="UgL-2T-Kqe"/>
+                                </connections>
                             </button>
                         </subviews>
                         <color key="backgroundColor" red="0.15760574381325387" green="0.16087166401388731" blue="0.14692924267945259" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
                         <constraints>
                             <constraint firstItem="6tS-sm-Qi5" firstAttribute="leading" secondItem="6Tk-OE-BBY" secondAttribute="leading" constant="20" id="09U-Yc-hdj"/>
+                            <constraint firstItem="nFO-c6-rRg" firstAttribute="centerY" secondItem="6tS-sm-Qi5" secondAttribute="centerY" id="3cS-70-fph"/>
                             <constraint firstItem="ekH-KT-Va7" firstAttribute="top" secondItem="LfQ-Ju-nAZ" secondAttribute="bottom" constant="10" id="4Hv-fT-7hR"/>
                             <constraint firstItem="VAP-tb-BsF" firstAttribute="trailing" secondItem="gGz-bx-Zkr" secondAttribute="trailing" id="5U4-kP-GkD"/>
                             <constraint firstItem="ekH-KT-Va7" firstAttribute="leading" secondItem="6Tk-OE-BBY" secondAttribute="leading" constant="20" id="5uC-q2-QhO"/>
@@ -207,6 +214,7 @@
                             <constraint firstItem="Q7S-zK-SLp" firstAttribute="top" secondItem="6Tk-OE-BBY" secondAttribute="top" constant="20" id="cPv-8K-87r"/>
                             <constraint firstItem="6Tk-OE-BBY" firstAttribute="trailing" secondItem="gGz-bx-Zkr" secondAttribute="trailing" constant="20" id="dDe-a3-HD2"/>
                             <constraint firstItem="gGz-bx-Zkr" firstAttribute="leading" secondItem="Q7S-zK-SLp" secondAttribute="trailing" constant="10" id="jb5-8L-XIZ"/>
+                            <constraint firstItem="nFO-c6-rRg" firstAttribute="centerX" secondItem="6tS-sm-Qi5" secondAttribute="centerX" id="mYU-Zb-8iF"/>
                             <constraint firstItem="LfQ-Ju-nAZ" firstAttribute="leading" secondItem="8bC-Xf-vdC" secondAttribute="leadingMargin" constant="30" id="md8-z7-ExY"/>
                             <constraint firstItem="6Tk-OE-BBY" firstAttribute="trailing" secondItem="GCY-Zj-6Nb" secondAttribute="trailing" constant="20" id="oai-dE-Or8"/>
                             <constraint firstItem="RrA-tI-ewA" firstAttribute="width" secondItem="8bC-Xf-vdC" secondAttribute="width" multiplier="0.5" id="pfa-hT-qrV"/>
@@ -220,6 +228,7 @@
                         <viewLayoutGuide key="safeArea" id="6Tk-OE-BBY"/>
                     </view>
                     <connections>
+                        <outlet property="activityIndicator" destination="nFO-c6-rRg" id="plz-OS-jgg"/>
                         <outlet property="coloredSeparatorView" destination="sc6-la-fBu" id="Los-Wo-4HF"/>
                         <outlet property="donateButton" destination="RrA-tI-ewA" id="V45-dT-NeM"/>
                         <outlet property="leagueButton" destination="EXY-BH-biE" id="EIA-Nd-xx3"/>
@@ -236,6 +245,6 @@
     </scenes>
     <resources>
         <image name="ic_logout" width="192" height="192"/>
-        <image name="ic_photo" width="1023" height="1512"/>
+        <image name="ic_photo" width="512" height="512"/>
     </resources>
 </document>

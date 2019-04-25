@@ -22,8 +22,14 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
         GIDSignIn.sharedInstance().clientID = FirebaseApp.app()?.options.clientID
         SDKApplicationDelegate.shared.application(application, didFinishLaunchingWithOptions: launchOptions)
         self.window = UIWindow(frame: UIScreen.main.bounds)
-        let viewController = LoginViewController.storyboardInstance()
-        let navigationController = UINavigationController(rootViewController: viewController)
+        var viewController: UIViewController?
+        if Auth.auth().currentUser != nil {
+            viewController = BoardViewController.storyboardInstance()
+        } else {
+            viewController = LoginViewController.storyboardInstance()
+        }
+
+        let navigationController = UINavigationController(rootViewController: viewController ?? UIViewController())
 
         self.window?.rootViewController = navigationController
         self.window?.makeKeyAndVisible()

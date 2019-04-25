@@ -25,6 +25,8 @@ class LeaguesViewController: UIViewController {
 
     override func viewWillAppear(_ animated: Bool) {
         super.viewWillAppear(animated)
+        let activityIndicator = ActivityIndicatorView()
+        activityIndicator.startAnimating()
         leaguesRef = Database.database().reference().child("leagues")
         leaguesRef.queryOrdered(byChild: "id").observe(.childAdded, with: { (snapshot) -> Void in
             let leagueTitle = snapshot.key
@@ -34,6 +36,7 @@ class LeaguesViewController: UIViewController {
                     self.colors[leagueTitle] = Int(colorHex)
                 }
             }
+            activityIndicator.stopAnimating()
             self.tableView.reloadData()
         })
 //        leaguesRef.observe(.childChanged, with: { (snapshot) -> Void in

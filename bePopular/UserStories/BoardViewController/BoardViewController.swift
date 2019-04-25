@@ -18,7 +18,8 @@ class BoardViewController: UIViewController {
     @IBOutlet weak var coloredSeparatorView: UIView!
     @IBOutlet weak var donateButton: UIButton!
     @IBOutlet weak var logoutButton: UIButton!
-
+    @IBOutlet weak var activityIndicator: UIActivityIndicatorView!
+    
     var league = ""
     var themeColor = 0
     var boardRef: DatabaseReference!
@@ -27,12 +28,13 @@ class BoardViewController: UIViewController {
 
     override var preferredStatusBarStyle : UIStatusBarStyle {
         return UIStatusBarStyle.lightContent
-        //return UIStatusBarStyle.default   // Make dark again
     }
 
     
     override func viewDidLoad() {
         super.viewDidLoad()
+        let image = UIImage(named: "ic_logout")?.withRenderingMode(.alwaysTemplate)
+        logoutButton.setImage(image, for: .normal)
         navigationController?.setNavigationBarHidden(true, animated: false)
         setupPersonalInfo()
         league = (UserDefaults.standard.value(forKey: UserDefaultKeys.league.rawValue) as? String) ?? "gold"
@@ -52,6 +54,9 @@ class BoardViewController: UIViewController {
     }
 
     func updateContent() {
+        activityIndicator.startAnimating()
+        activityIndicator.isHidden = false
+        tableView.isHidden = true
         league = (UserDefaults.standard.value(forKey: UserDefaultKeys.league.rawValue) as? String) ?? "gold"
         themeColor = (UserDefaults.standard.value(forKey: UserDefaultKeys.appColor.rawValue) as? Int) ?? 0xFCC735
         setupUI()
@@ -64,6 +69,9 @@ class BoardViewController: UIViewController {
             self.fetchUserInfo(uid: uid, completion: { (result) in
                 self.membersInfo[uid] = result
                 self.tableView.reloadData()
+                self.activityIndicator.stopAnimating()
+                self.activityIndicator.isHidden = true
+                self.tableView.isHidden = false
             })
         })
         boardRef.observe(.childChanged, with: { (snapshot) -> Void in
@@ -103,14 +111,10 @@ class BoardViewController: UIViewController {
             let lastName = userInfoDict.value(forKey: "last_name") as? String
             self.nameLabel.text = "\(firstName ?? "") \(lastName ?? "")"
             if let imageURLString = userInfoDict.value(forKey: "logo_image_url") as? String, let url = URL(string: imageURLString) {
-                let task = URLSession.shared.downloadTask(with: url) { localURL, urlResponse, error in
-                    if let localURL = localURL, let data = try? Data(contentsOf: localURL) {
-                        DispatchQueue.main.async {
-                            self.profileImageView.image = UIImage(data: data)
-                        }
-                    }
-                }
-                task.resume()
+                let image = ImageCache.shared.image(for: url, completion: {
+                    self.setupPersonalInfo()
+                })
+                self.profileImageView.image = image
             }
         }
     }
@@ -135,6 +139,17 @@ class BoardViewController: UIViewController {
         viewController.didMove(toParent: self)
     }
 
+    @IBAction func onLogoutButton(_ sender: Any) {
+        do {
+            try Auth.auth().signOut()
+            let viewController = LoginViewController.storyboardInstance()
+            let navigationController = UINavigationController(rootViewController: viewController)
+            UIApplication.shared.keyWindow?.rootViewController = navigationController
+        } catch(let error) {
+            Alert.showErrorAlert(with: error.localizedDescription)
+        }
+    }
+
     @IBAction func onPayButton(_ sender: Any) {
         DatabaseManager.shared.saveScore()
     }
@@ -155,7 +170,15 @@ extension BoardViewController: UITableViewDelegate, UITableViewDataSource {
         cell.nameLabel.text = "\(firstName) \(lastName)"
         cell.positionLabel.text = "\(indexPath.row + 1)"
         cell.positionLabel.textColor = UIColor(hexRGB: themeColor)
-        cell.photoImageView.image = UIImage(named: "ic_photo")
+        if let urlString = membersInfo[boardMembers[indexPath.row]]?.value(forKey: "logo_image_url") as? String,
+            let url = URL(string: urlString) {
+            let image = ImageCache.shared.image(for: url) {
+                self.tableView.reloadData()
+            }
+            cell.photoImageView.image = image ?? UIImage(named: "ic_photo")
+        } else {
+            cell.photoImageView.image = UIImage(named: "ic_photo")
+        }
         return cell
     }
 }
