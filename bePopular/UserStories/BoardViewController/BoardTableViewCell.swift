@@ -11,5 +11,6 @@ import UIKit
 class BoardTableViewCell: UITableViewCell {
     @IBOutlet weak var positionLabel: UILabel!
     @IBOutlet weak var nameLabel: UILabel!
+    @IBOutlet weak var separatedView: UIView!
     @IBOutlet weak var photoImageView: UIImageView!
 }

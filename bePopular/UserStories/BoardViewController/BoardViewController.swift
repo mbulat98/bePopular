@@ -12,6 +12,7 @@ import Firebase
 class BoardViewController: UIViewController {
 
     @IBOutlet weak var profileImageView: UIImageView!
+    @IBOutlet weak var refreshButton: UIButton!
     @IBOutlet weak var nameLabel: UILabel!
     @IBOutlet weak var tableView: UITableView!
     @IBOutlet weak var leagueButton: UIButton!
@@ -19,8 +20,9 @@ class BoardViewController: UIViewController {
     @IBOutlet weak var donateButton: UIButton!
     @IBOutlet weak var logoutButton: UIButton!
     @IBOutlet weak var activityIndicator: UIActivityIndicatorView!
+    @IBOutlet weak var viewsCountLabel: UILabel!
     
-    var league = ""
+    var league: LeagueProtocol?
     var themeColor = 0
     var boardRef: DatabaseReference!
     var boardMembers = [String]()
@@ -34,17 +36,28 @@ class BoardViewController: UIViewController {
     override func viewDidLoad() {
         super.viewDidLoad()
         let image = UIImage(named: "ic_logout")?.withRenderingMode(.alwaysTemplate)
+        let refreshImage = UIImage(named: "ic_refresh")?.withRenderingMode(.alwaysTemplate)
         logoutButton.setImage(image, for: .normal)
+        refreshButton.setImage(refreshImage, for: .normal)
         navigationController?.setNavigationBarHidden(true, animated: false)
-        setupPersonalInfo()
-        league = (UserDefaults.standard.value(forKey: UserDefaultKeys.league.rawValue) as? String) ?? "gold"
-        let colorString = (UserDefaults.standard.value(forKey: UserDefaultKeys.appColor.rawValue) as? String) ?? "FCC735"
-        let colorHex = Int(UInt(colorString, radix: 16) ?? 0xfcc735)
+        let colorHex = Int(league?.colorHEX ?? 0xfcc735)
         themeColor = colorHex
+        guard let uid = Auth.auth().currentUser?.uid else {
+            return
+        }
+        let viewsCountRef = Database.database().reference().child("users").child(uid).child("public").child("views_count")
+            viewsCountRef.observe(.value) { (snapshot) in
+                if let viewsCount = snapshot.value as? Int? {
+                    self.viewsCountLabel.text = "\(viewsCount ?? 0)"
+                }
+
+        }
     }
 
     override func viewWillAppear(_ animated: Bool) {
         super.viewWillAppear(animated)
+        league = LeaguesManager.league
+        setupPersonalInfo()
         updateContent()
     }
 
@@ -57,12 +70,12 @@ class BoardViewController: UIViewController {
         activityIndicator.startAnimating()
         activityIndicator.isHidden = false
         tableView.isHidden = true
-        league = (UserDefaults.standard.value(forKey: UserDefaultKeys.league.rawValue) as? String) ?? "gold"
-        themeColor = (UserDefaults.standard.value(forKey: UserDefaultKeys.appColor.rawValue) as? Int) ?? 0xFCC735
+        league = LeaguesManager.league
+        themeColor = league?.colorHEX ?? 0xcd7f32
         setupUI()
         boardMembers = []
         self.tableView.reloadData()
-        boardRef = Database.database().reference().child("boards").child(league).child("members")
+        boardRef = Database.database().reference().child("boards").child(league?.name ?? "").child("members")
         boardRef.queryOrdered(byChild: "date").observe(.childAdded, with: { (snapshot) -> Void in
             let uid = snapshot.key
             self.boardMembers.insert(uid, at: 0)
@@ -70,34 +83,22 @@ class BoardViewController: UIViewController {
                 self.membersInfo[uid] = result
                 self.tableView.reloadData()
                 self.activityIndicator.stopAnimating()
+                self.tableView.refreshControl?.endRefreshing()
                 self.activityIndicator.isHidden = true
                 self.tableView.isHidden = false
             })
-        })
-        boardRef.observe(.childChanged, with: { (snapshot) -> Void in
-            let uid = snapshot.key
-            if let index = self.boardMembers.firstIndex(of: uid) {
-                self.boardMembers.remove(at: index)
-                self.boardMembers.insert(uid, at: 0)
-                self.tableView.reloadData()
-            }
-        })
-        boardRef.observe(.childRemoved, with: { (snapshot) -> Void in
-            let uid = snapshot.key
-            if let index = self.boardMembers.firstIndex(of: uid) {
-                self.boardMembers.remove(at: index)
-                self.tableView.reloadData()
-            }
         })
     }
 
     func setupUI() {
         let color = UIColor(hexRGB: themeColor)
-        leagueButton.setTitle(league.uppercased(), for: .normal)
+        leagueButton.setTitle(league?.name.uppercased(), for: .normal)
         leagueButton.setTitleColor(color, for: .normal)
         coloredSeparatorView.backgroundColor = color
         donateButton.backgroundColor = color
-        logoutButton.tintColor = color
+        refreshButton.tintColor = color
+        //logoutButton.tintColor = color
+        donateButton.setTitle("Donate \(league?.price ?? "")$", for: .normal)
     }
 
     func setupPersonalInfo() {
@@ -114,7 +115,7 @@ class BoardViewController: UIViewController {
                 let image = ImageCache.shared.image(for: url, completion: {
                     self.setupPersonalInfo()
                 })
-                self.profileImageView.image = image
+                self.profileImageView.image = image ?? UIImage(named: "ic_photo")
             }
         }
     }
@@ -129,6 +130,28 @@ class BoardViewController: UIViewController {
         }
     }
 
+    private func logout() {
+        do {
+            try Auth.auth().signOut()
+            let viewController = LoginViewController.storyboardInstance()
+            let navigationController = UINavigationController(rootViewController: viewController)
+            UIApplication.shared.keyWindow?.rootViewController = navigationController
+        } catch(let error) {
+            Alert.showErrorAlert(with: error.localizedDescription)
+        }
+    }
+
+    @IBAction func onRefreshButton(_ sender: Any) {
+        updateContent()
+    }
+    @IBAction func onProfileButton(_ sender: Any) {
+        guard let viewController = ProfileViewController.storyboardInstance() as? ProfileViewController, let uid = Auth.auth().currentUser?.uid else {
+            return
+        }
+        viewController.uid = uid
+        navigationController?.pushViewController(viewController, animated: true)
+    }
+
     @IBAction func onLeagueButton(_ sender: Any) {
         boardRef.removeAllObservers()
         let viewController = LeaguesViewController.storyboardInstance()
@@ -140,14 +163,12 @@ class BoardViewController: UIViewController {
     }
 
     @IBAction func onLogoutButton(_ sender: Any) {
-        do {
-            try Auth.auth().signOut()
-            let viewController = LoginViewController.storyboardInstance()
-            let navigationController = UINavigationController(rootViewController: viewController)
-            UIApplication.shared.keyWindow?.rootViewController = navigationController
-        } catch(let error) {
-            Alert.showErrorAlert(with: error.localizedDescription)
+        let alert = Alert(title: "Logout", message: "Are you sure to logout?")
+        alert.addAction(with: "Yes", alertStyle: .destructive) { (_) in
+            self.logout()
         }
+        alert.addAction(with: "No", alertStyle: .default)
+        alert.present()
     }
 
     @IBAction func onPayButton(_ sender: Any) {
@@ -170,6 +191,7 @@ extension BoardViewController: UITableViewDelegate, UITableViewDataSource {
         cell.nameLabel.text = "\(firstName) \(lastName)"
         cell.positionLabel.text = "\(indexPath.row + 1)"
         cell.positionLabel.textColor = UIColor(hexRGB: themeColor)
+        cell.separatedView.backgroundColor = UIColor(hexRGB: themeColor)
         if let urlString = membersInfo[boardMembers[indexPath.row]]?.value(forKey: "logo_image_url") as? String,
             let url = URL(string: urlString) {
             let image = ImageCache.shared.image(for: url) {
@@ -180,6 +202,14 @@ extension BoardViewController: UITableViewDelegate, UITableViewDataSource {
             cell.photoImageView.image = UIImage(named: "ic_photo")
         }
         return cell
+    }
+
+    func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
+        guard let viewController = ProfileViewController.storyboardInstance() as? ProfileViewController else {
+            return
+        }
+        viewController.uid = boardMembers[indexPath.row]
+        navigationController?.pushViewController(viewController, animated: true)
     }
 }
 

@@ -15,7 +15,7 @@ class LeaguesViewController: UIViewController {
     @IBOutlet weak var tableViewHeightConstraint: NSLayoutConstraint!
     
     var leaguesRef: DatabaseReference!
-    private var leagues = [String]()
+    private var leagues = [League]()
     private var colors = [String: Int]()
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -30,32 +30,20 @@ class LeaguesViewController: UIViewController {
         leaguesRef = Database.database().reference().child("leagues")
         leaguesRef.queryOrdered(byChild: "id").observe(.childAdded, with: { (snapshot) -> Void in
             let leagueTitle = snapshot.key
-            self.leagues.append(leagueTitle)
+            var colorHEX = 0x000
+            var price = ""
             if let dict = snapshot.value as? [String: Any] {
                 if let colorHex = UInt(dict["color"] as! String, radix: 16) {
-                    self.colors[leagueTitle] = Int(colorHex)
+                    colorHEX = Int(colorHex)
+                }
+                if let tempPrice = dict["price"] as? String {
+                    price = tempPrice
                 }
             }
+            let league = League(name: leagueTitle, price: price, colorHEX: colorHEX)
+            self.leagues.append(league)
             activityIndicator.stopAnimating()
             self.tableView.reloadData()
-        })
-//        leaguesRef.observe(.childChanged, with: { (snapshot) -> Void in
-//            let leagueTitle = snapshot.key
-//            if let index = self.leagues.firstIndex(of: leagueTitle) {
-//                self.leagues.remove(at: index)
-//                self.leagues.insert(leagueTitle, at: 0)
-//                self.tableView.reloadData()
-//                if let dict = snapshot.value as? [String: Any], let colorHex = dict["color"] as? Int {
-//                    self.colors[leagueTitle] = colorHex
-//                }
-//            }
-//        })
-        leaguesRef.observe(.childRemoved, with: { (snapshot) -> Void in
-            let leagueTitle = snapshot.key
-            if let index = self.leagues.firstIndex(of: leagueTitle) {
-                self.leagues.remove(at: index)
-                self.tableView.reloadData()
-            }
         })
     }
 
@@ -64,7 +52,13 @@ class LeaguesViewController: UIViewController {
         leaguesRef.removeAllObservers()
     }
     
-
+    @IBAction func onTap(_ sender: UIGestureRecognizer) {
+        let point = sender.location(in: tableView)
+        if tableView.indexPathForRow(at: point) == nil {
+            self.view.removeFromSuperview()
+            self.removeFromParent()
+        }
+    }
 }
 
 extension LeaguesViewController: UITableViewDelegate, UITableViewDataSource {
@@ -77,9 +71,10 @@ extension LeaguesViewController: UITableViewDelegate, UITableViewDataSource {
             assertionFailure()
             return UITableViewCell()
         }
-        let title = leagues[indexPath.row]
+        let league = leagues[indexPath.row]
+        let title = league.name
         cell.leagueButton.setTitle(title.uppercased(), for: .normal)
-        let color = UIColor(hexRGB: colors[title] ?? 0xFFF)
+        let color = UIColor(hexRGB: league.colorHEX)
         cell.leagueButton.setTitleColor(color, for: .normal)
         cell.leagueButton.layer.borderColor = color.cgColor
         cell.leagueButton.layer.borderWidth = 2
@@ -91,9 +86,8 @@ extension LeaguesViewController: UITableViewDelegate, UITableViewDataSource {
     }
 
     @objc func onLeague(sender: UIButton) {
-        let title = leagues[sender.tag]
-        UserDefaults.standard.set(title, forKey: UserDefaultKeys.league.rawValue)
-        UserDefaults.standard.set(colors[title], forKey: UserDefaultKeys.appColor.rawValue)
+        let league = leagues[sender.tag]
+        LeaguesManager.setLeague(league: league)
         (self.parent as! BoardViewController).updateContent()
         self.view.removeFromSuperview()
         self.removeFromParent()

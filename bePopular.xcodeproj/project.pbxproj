@@ -9,6 +9,11 @@
 /* Begin PBXBuildFile section */
 		57BCA67714BA69DEA747D04A /* Pods_bePopular.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = C92E40F910673D7915D24ED0 /* Pods_bePopular.framework */; };
 		953244352271AAC0007EF059 /* ImageCache.swift in Sources */ = {isa = PBXBuildFile; fileRef = 953244342271AAC0007EF059 /* ImageCache.swift */; };
+		953994DE2292A80900AE60D3 /* LeaguesManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 953994DD2292A80900AE60D3 /* LeaguesManager.swift */; };
+		953994E02292A91E00AE60D3 /* League.swift in Sources */ = {isa = PBXBuildFile; fileRef = 953994DF2292A91E00AE60D3 /* League.swift */; };
+		953994E52292D0ED00AE60D3 /* ProfileViewController.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 953994E42292D0ED00AE60D3 /* ProfileViewController.storyboard */; };
+		953994E92292E82100AE60D3 /* ProfileViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 953994E82292E82100AE60D3 /* ProfileViewController.swift */; };
+		953994ED2296EE7000AE60D3 /* TextViewWithPlaceholder.swift in Sources */ = {isa = PBXBuildFile; fileRef = 953994EC2296EE7000AE60D3 /* TextViewWithPlaceholder.swift */; };
 		954F41152267285B00328928 /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 954F41142267285B00328928 /* AppDelegate.swift */; };
 		954F41172267285B00328928 /* BoardViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 954F41162267285B00328928 /* BoardViewController.swift */; };
 		954F411A2267285B00328928 /* BoardViewController.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 954F41182267285B00328928 /* BoardViewController.storyboard */; };
@@ -41,6 +46,11 @@
 
 /* Begin PBXFileReference section */
 		953244342271AAC0007EF059 /* ImageCache.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ImageCache.swift; sourceTree = "<group>"; };
+		953994DD2292A80900AE60D3 /* LeaguesManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LeaguesManager.swift; sourceTree = "<group>"; };
+		953994DF2292A91E00AE60D3 /* League.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = League.swift; sourceTree = "<group>"; };
+		953994E42292D0ED00AE60D3 /* ProfileViewController.storyboard */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = ProfileViewController.storyboard; path = bePopular/UserStories/ProfileViewController.storyboard; sourceTree = SOURCE_ROOT; };
+		953994E82292E82100AE60D3 /* ProfileViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ProfileViewController.swift; sourceTree = "<group>"; };
+		953994EC2296EE7000AE60D3 /* TextViewWithPlaceholder.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = TextViewWithPlaceholder.swift; sourceTree = "<group>"; };
 		954F41112267285B00328928 /* bePopular.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = bePopular.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		954F41142267285B00328928 /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
 		954F41162267285B00328928 /* BoardViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BoardViewController.swift; sourceTree = "<group>"; };
@@ -97,6 +107,34 @@
 			name = Pods;
 			sourceTree = "<group>";
 		};
+		953994E12292A9C700AE60D3 /* Model */ = {
+			isa = PBXGroup;
+			children = (
+				954F4155226DC29500328928 /* SaveScore.swift */,
+				954F41472268BF7700328928 /* UserInfo.swift */,
+				953994DF2292A91E00AE60D3 /* League.swift */,
+			);
+			path = Model;
+			sourceTree = "<group>";
+		};
+		953994E22292A9FE00AE60D3 /* Manager */ = {
+			isa = PBXGroup;
+			children = (
+				954F41452268BB5800328928 /* DatabaseManager.swift */,
+				953994DD2292A80900AE60D3 /* LeaguesManager.swift */,
+			);
+			path = Manager;
+			sourceTree = "<group>";
+		};
+		953994E72292D12200AE60D3 /* ProfileViewController */ = {
+			isa = PBXGroup;
+			children = (
+				953994E42292D0ED00AE60D3 /* ProfileViewController.storyboard */,
+				953994E82292E82100AE60D3 /* ProfileViewController.swift */,
+			);
+			path = ProfileViewController;
+			sourceTree = "<group>";
+		};
 		954F41082267285B00328928 = {
 			isa = PBXGroup;
 			children = (
@@ -118,16 +156,15 @@
 		954F41132267285B00328928 /* bePopular */ = {
 			isa = PBXGroup;
 			children = (
-				954F41142267285B00328928 /* AppDelegate.swift */,
-				954F41452268BB5800328928 /* DatabaseManager.swift */,
-				954F4155226DC29500328928 /* SaveScore.swift */,
-				954F41472268BF7700328928 /* UserInfo.swift */,
-				954F4157226DCAB900328928 /* UserDefaultKeys.swift */,
+				953994E22292A9FE00AE60D3 /* Manager */,
+				953994E12292A9C700AE60D3 /* Model */,
 				953244342271AAC0007EF059 /* ImageCache.swift */,
 				954F41502269A4BF00328928 /* UserStories */,
 				954F413D22687F2000328928 /* Common */,
 				954F41332268693900328928 /* Extensions */,
 				954F411B2267285E00328928 /* Assets.xcassets */,
+				954F4157226DCAB900328928 /* UserDefaultKeys.swift */,
+				954F41142267285B00328928 /* AppDelegate.swift */,
 				954F411D2267285E00328928 /* LaunchScreen.storyboard */,
 				954F41202267285E00328928 /* Info.plist */,
 				954F41432268AC5E00328928 /* GoogleService-Info.plist */,
@@ -178,6 +215,7 @@
 		954F413D22687F2000328928 /* Common */ = {
 			isa = PBXGroup;
 			children = (
+				953994EC2296EE7000AE60D3 /* TextViewWithPlaceholder.swift */,
 				954F41422268809C00328928 /* ActivityIndicator */,
 				954F413B22687F0B00328928 /* Alert.swift */,
 				954F413A2268749C00328928 /* ScrollView */,
@@ -206,6 +244,7 @@
 		954F41502269A4BF00328928 /* UserStories */ = {
 			isa = PBXGroup;
 			children = (
+				953994E72292D12200AE60D3 /* ProfileViewController */,
 				954F412822675D4300328928 /* BoardViewController */,
 				954F41292267614600328928 /* LoginViewController */,
 				954F414F2269A4AB00328928 /* SignUpViewController */,
@@ -267,6 +306,7 @@
 				TargetAttributes = {
 					954F41102267285B00328928 = {
 						CreatedOnToolsVersion = 10.1;
+						LastSwiftMigration = 1020;
 					};
 				};
 			};
@@ -298,6 +338,7 @@
 				954F412E226761A900328928 /* LoginViewController.storyboard in Resources */,
 				954F41442268AC5E00328928 /* GoogleService-Info.plist in Resources */,
 				954F41402268809500328928 /* ActivityIndicatorView.xib in Resources */,
+				953994E52292D0ED00AE60D3 /* ProfileViewController.storyboard in Resources */,
 				954F414C2269A45300328928 /* SignUpViewController.storyboard in Resources */,
 				954F411C2267285E00328928 /* Assets.xcassets in Resources */,
 				954F411A2267285B00328928 /* BoardViewController.storyboard in Resources */,
@@ -408,12 +449,16 @@
 				954F41412268809500328928 /* ActivityIndicatorView.swift in Sources */,
 				954F415C226DF13500328928 /* LeaguesViewController.swift in Sources */,
 				954F412B2267618600328928 /* LoginViewController.swift in Sources */,
+				953994E92292E82100AE60D3 /* ProfileViewController.swift in Sources */,
+				953994E02292A91E00AE60D3 /* League.swift in Sources */,
+				953994ED2296EE7000AE60D3 /* TextViewWithPlaceholder.swift in Sources */,
 				954F414A2268C65F00328928 /* Encodable+Dictionary.swift in Sources */,
 				954F41482268BF7700328928 /* UserInfo.swift in Sources */,
 				954F41372268747700328928 /* ScrollContentViewController.swift in Sources */,
 				954F41172267285B00328928 /* BoardViewController.swift in Sources */,
 				954F414E2269A4A600328928 /* SignUpViewController.swift in Sources */,
 				954F4154226A0BF400328928 /* UIColor+hex.swift in Sources */,
+				953994DE2292A80900AE60D3 /* LeaguesManager.swift in Sources */,
 				953244352271AAC0007EF059 /* ImageCache.swift in Sources */,
 				954F4132226868AD00328928 /* UITextField+Padding.swift in Sources */,
 				954F4127226751C400328928 /* BoardTableViewCell.swift in Sources */,
@@ -580,7 +625,7 @@
 				);
 				PRODUCT_BUNDLE_IDENTIFIER = m.bulat.bePopular;
 				PRODUCT_NAME = "$(TARGET_NAME)";
-				SWIFT_VERSION = 4.2;
+				SWIFT_VERSION = 5.0;
 				TARGETED_DEVICE_FAMILY = "1,2";
 			};
 			name = Debug;
@@ -599,7 +644,7 @@
 				);
 				PRODUCT_BUNDLE_IDENTIFIER = m.bulat.bePopular;
 				PRODUCT_NAME = "$(TARGET_NAME)";
-				SWIFT_VERSION = 4.2;
+				SWIFT_VERSION = 5.0;
 				TARGETED_DEVICE_FAMILY = "1,2";
 			};
 			name = Release;

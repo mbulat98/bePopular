@@ -20,7 +20,7 @@ class DatabaseManager: NSObject {
         ref = Database.database().reference()
     }
 
-    func createUser(uid: String, userData: UserInfo, completion: @escaping () -> Void) {
+    func updateUser(uid: String, userData: UserInfo, completion: @escaping () -> Void) {
         guard let data = userData.dictionary else {
             assertionFailure()
             return
@@ -50,7 +50,7 @@ class DatabaseManager: NSObject {
             Alert.showErrorAlert(with: "No current user")
             return
         }
-        let league = UserDefaults.standard.value(forKey: UserDefaultKeys.league.rawValue) as? String ?? ""
+        let league = LeaguesManager.league?.name ??  ""
         let postData = SaveScore(uid: uid, league: league)
         guard let jsonData = try? JSONEncoder().encode(postData) else {
             assertionFailure()
@@ -74,6 +74,29 @@ class DatabaseManager: NSObject {
         }
         task.resume()
 
+    }
+
+    func updateViewsCounter(uid: String) {
+        guard let selfUid = Auth.auth().currentUser?.uid else {
+            return
+        }
+        let viewsCountRef = ref.child("users").child(uid).child("public").child("views_count")
+        let viewsRef = ref.child("users").child(uid).child("public").child("views")
+        if selfUid != uid {
+            viewsRef.observeSingleEvent(of: .value) { (snapshot) in
+                let views = snapshot.value as? [String?: Any?]
+                if  views?.keys.contains(selfUid) == false || views == nil {
+                    viewsCountRef.observeSingleEvent(of: .value) { (snapshot) in
+                        if let count = snapshot.value as? Int {
+                            viewsCountRef.setValue(count + 1)
+                        } else {
+                            viewsCountRef.setValue(1)
+                        }
+                    }
+                    viewsRef.child(selfUid).setValue(Date().description)
+                }
+            }
+        }
     }
 
 }

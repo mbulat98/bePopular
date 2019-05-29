@@ -22,8 +22,6 @@ class SignUpViewController: ScrollContentViewController {
     @IBOutlet weak var emailTextField: UITextField!
     @IBOutlet weak var passwordTextField: UITextField!
 
-    private let goldColor = UIColor(displayP3Red: 252/255, green: 199/255, blue: 53/255, alpha: 1)
-
     override var scrollView: TappableScrollView {
         return contentScrollView
     }
@@ -46,12 +44,9 @@ class SignUpViewController: ScrollContentViewController {
 
         let facebookLoginButton = LoginButton(readPermissions: [.publicProfile, .email, .userAboutMe])
         facebookLoginButton.delegate = self
-        facebookLoginButton.frame = CGRect(x: 0, y: 3, width: facebookLoginButtonView.frame.width + 20, height: facebookLoginButtonView.frame.height + 1)
+        facebookLoginButton.frame = CGRect(x: 0, y: 3, width: facebookLoginButtonView.frame.width, height: facebookLoginButtonView.frame.height + 1)
         facebookLoginButtonView.addSubview(facebookLoginButton)
-        navigationController?.navigationBar.barTintColor = view.backgroundColor
-        navigationController?.navigationBar.titleTextAttributes = [.foregroundColor: goldColor]
-        navigationController?.navigationBar.tintColor = goldColor
-        useCustomBackNavigationButton(color: goldColor)
+        useCustomNavigationBar(backgroundColor: view.backgroundColor, tintColor: .gold)
         title = "Sign Up"
     }
 
@@ -87,7 +82,7 @@ class SignUpViewController: ScrollContentViewController {
                 assertionFailure()
                 return
             }
-            DatabaseManager.shared.createUser(uid: uid, userData: userInfo) { () in
+            DatabaseManager.shared.updateUser(uid: uid, userData: userInfo) { () in
                 self.openBoardViewController()
                 self.activityIndicator.stopAnimating()
             }
@@ -155,7 +150,7 @@ extension SignUpViewController: LoginButtonDelegate {
 
         }
         userInfo.email = response.dictionaryValue?["email"] as? String
-        DatabaseManager.shared.createUser(uid: uid, userData: userInfo) { () in
+        DatabaseManager.shared.updateUser(uid: uid, userData: userInfo) { () in
             self.openBoardViewController()
             self.activityIndicator.stopAnimating()
             LoginManager().logOut()
@@ -193,7 +188,7 @@ extension SignUpViewController: GIDSignInUIDelegate, GIDSignInDelegate {
                 assertionFailure()
                 return
             }
-            DatabaseManager.shared.createUser(uid: uid, userData: userInfo) { () in
+            DatabaseManager.shared.updateUser(uid: uid, userData: userInfo) { () in
                 self.openBoardViewController()
                 activityIndicator.stopAnimating()
             }

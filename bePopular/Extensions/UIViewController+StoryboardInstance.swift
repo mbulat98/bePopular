@@ -17,4 +17,11 @@ extension UIViewController {
         navigationController?.navigationBar.tintColor = color
         navigationItem.leftBarButtonItem = backButton
     }
+
+    func useCustomNavigationBar(backgroundColor: UIColor?, tintColor: UIColor) {
+        navigationController?.navigationBar.barTintColor = backgroundColor ?? .white
+        navigationController?.navigationBar.titleTextAttributes = [.foregroundColor: tintColor]
+        navigationController?.navigationBar.tintColor = tintColor
+        useCustomBackNavigationButton(color: tintColor)
+    }
 }

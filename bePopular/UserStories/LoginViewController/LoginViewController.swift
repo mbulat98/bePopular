@@ -41,7 +41,7 @@ class LoginViewController: ScrollContentViewController {
 
         let facebookLoginButton = LoginButton(readPermissions: [.publicProfile, .email, .userAboutMe])
         facebookLoginButton.delegate = self
-        facebookLoginButton.frame = CGRect(x: 0, y: 3, width: facebookLoginButtonView.frame.width + 20, height: facebookLoginButtonView.frame.height + 1)
+        facebookLoginButton.frame = CGRect(x: 0, y: 3, width: facebookLoginButtonView.frame.width, height: facebookLoginButtonView.frame.height + 1)
         facebookLoginButtonView.addSubview(facebookLoginButton)
     }
 
@@ -118,21 +118,24 @@ extension LoginViewController: LoginButtonDelegate {
                 Alert.showErrorAlert(with: error.localizedDescription)
                 return
             }
-            guard let uid = authResult?.user.uid else {
-                assertionFailure()
-                return
-            }
-            let connection = GraphRequestConnection()
-            connection.add(GraphRequest(graphPath: "/me")) { _, result in
-                switch result {
-                case .success(let response):
-                    self.saveFacebookUserInfo(response: response, uid: uid)
-                case .failed(let error):
-                    Alert.showErrorAlert(with: error.localizedDescription)
-                    self.activityIndicator.stopAnimating()
-                }
-            }
-            connection.start()
+            self.openBoardViewController()
+            self.activityIndicator.stopAnimating()
+            LoginManager().logOut()
+//            guard let uid = authResult?.user.uid else {
+//                assertionFailure()
+//                return
+//            }
+//            let connection = GraphRequestConnection()
+//            connection.add(GraphRequest(graphPath: "/me")) { _, result in
+//                switch result {
+//                case .success(let response):
+//                    self.saveFacebookUserInfo(response: response, uid: uid)
+//                case .failed(let error):
+//                    Alert.showErrorAlert(with: error.localizedDescription)
+//                    self.activityIndicator.stopAnimating()
+//                }
+//            }
+//            connection.start()
 
         }
     }
@@ -147,7 +150,7 @@ extension LoginViewController: LoginButtonDelegate {
 
         }
         userInfo.email = response.dictionaryValue?["email"] as? String
-        DatabaseManager.shared.createUser(uid: uid, userData: userInfo) { () in
+        DatabaseManager.shared.updateUser(uid: uid, userData: userInfo) { () in
             self.openBoardViewController()
             self.activityIndicator.stopAnimating()
             LoginManager().logOut()
@@ -174,22 +177,22 @@ extension LoginViewController: GIDSignInUIDelegate, GIDSignInDelegate {
                 Alert.showErrorAlert(with: error.localizedDescription)
                 return
             }
-            var userInfo = UserInfo()
-            userInfo.firstName = user.profile.givenName
-            userInfo.lastName = user.profile.familyName
-            userInfo.email = user.profile.email
-            if user.profile.hasImage {
-                userInfo.logoImageURL = user.profile.imageURL(withDimension: 120)?.absoluteString
-            }
-            guard let uid = authResult?.user.uid else {
-                assertionFailure()
-                return
-            }
-            DatabaseManager.shared.createUser(uid: uid, userData: userInfo) { () in
-                self.openBoardViewController()
-                activityIndicator.stopAnimating()
-                signIn.disconnect()
-            }
+//            var userInfo = UserInfo()
+//            userInfo.firstName = user.profile.givenName
+//            userInfo.lastName = user.profile.familyName
+//            userInfo.email = user.profile.email
+//            if user.profile.hasImage {
+//                userInfo.logoImageURL = user.profile.imageURL(withDimension: 120)?.absoluteString
+//            }
+//            guard let uid = authResult?.user.uid else {
+//                assertionFailure()
+//                return
+//            }
+//            DatabaseManager.shared.updateUser(uid: uid, userData: userInfo) { () in
+//            }
+            self.openBoardViewController()
+            activityIndicator.stopAnimating()
+            signIn.disconnect()
         }
     }
 

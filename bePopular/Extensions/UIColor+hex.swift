@@ -2,6 +2,7 @@ import Foundation
 import UIKit
 
 extension UIColor {
+    static let gold = UIColor(hexRGB: 0xFCC735)
     convenience init(hexRGB: Int) {
         let red = CGFloat((hexRGB >> 16) & 0xFF) / 255
         let green = CGFloat((hexRGB >> 8) & 0xFF) / 255

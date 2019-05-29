@@ -21,6 +21,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
         FirebaseApp.configure()
         GIDSignIn.sharedInstance().clientID = FirebaseApp.app()?.options.clientID
         SDKApplicationDelegate.shared.application(application, didFinishLaunchingWithOptions: launchOptions)
+        LeaguesManager.setLeague(league: nil)
         self.window = UIWindow(frame: UIScreen.main.bounds)
         var viewController: UIViewController?
         if Auth.auth().currentUser != nil {
@@ -42,6 +43,10 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
         return GIDSignIn.sharedInstance().handle(url,
                                                  sourceApplication:options[UIApplication.OpenURLOptionsKey.sourceApplication] as? String,
                                                  annotation: [:]) || handled
+    }
+
+    func applicationWillEnterForeground(_ application: UIApplication) {
+        LeaguesManager.saveLeague()
     }
 }
 
